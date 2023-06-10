@@ -17,9 +17,9 @@ describe('Teste de Automação com Cypress', () => {
         cy.contains('João').should('exist');
 
         // Localizar o contato desejado na tabela (assumindo que o contato já exista)
-        cy.get('[data-id="text"]').within(() => {
+        cy.get('[data-id="edit"]').within(() => {
           // Clicar no botão de edição do contato
-            cy.get('button[name="edit"]').click();
+            cy.get('button[class="edit"]').click();
         });
 
         // Preencher os campos do formulário de edição
@@ -44,7 +44,7 @@ describe('Teste de Automação com Cypress', () => {
       // Localizar o contato desejado na tabela (assumindo que o contato já exista)
         cy.contains('João').parent('tr').within(() => {
         // Clicar no botão de exclusão do contato
-        cy.get('button[name="delete"]').click();
+        cy.get('button[class="delete"]').click();
     });
 
       // Verificar se o contato foi removido corretamente
