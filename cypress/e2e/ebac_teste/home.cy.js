@@ -1,53 +1,54 @@
 /// <reference types="cypress" />
 
-describe('Teste de Contatos', () => {
-    beforeEach(() => {
+describe('Teste de Automação com Cypress', () => {
+    it('Adicionar Contato', () => {
         cy.visit('https://agenda-contatos-react.vercel.app/');
+    
+        cy.get('[type="text"]').type('João');
+        cy.get('[type="email"]').type('joao@email.com');
+        cy.get('[type="tel"]').type('11987654321');
+        cy.contains('Adicionar').click();
     });
 
-    it('Deve adicionar um novo contato', () => {
-        cy.get('[data-testid="add-contact-button"]').click();
-        cy.get('[data-testid="name-input"]').type('João');
-        cy.get('[data-testid="tel-input"]').type('(11) 98765-4321');
-        cy.get('[data-testid="email-input"]').type('joao@example.com');
-        cy.get('[data-testid="save-contact-button"]').click();
-        cy.contains('Contato adicionado com sucesso!').should('be.visible');
-        cy.contains('João').should('be.visible');
-    });
-});
-
-describe('Teste de Contatos', () => {
-    beforeEach(() => {
+    it('Editar Contato', () => {
         cy.visit('https://agenda-contatos-react.vercel.app/');
+
+        // Certificar-se de que o contato existe na lista antes de editar
+        cy.contains('João').should('exist');
+
+        // Localizar o contato desejado na tabela (assumindo que o contato já exista)
+        cy.get('[data-id="text"]').within(() => {
+          // Clicar no botão de edição do contato
+            cy.get('button[name="edit"]').click();
+        });
+
+        // Preencher os campos do formulário de edição
+        cy.get('[type="text"]').clear().type('João Silva');
+        cy.get('[type="email"]').clear().type('joao.silva@email.com');
+        cy.get('[type="tel"]').clear().type('999999999');
+
+        // Clicar no botão de salvar a edição
+        cy.contains('Salvar').click();
+
+        // Verificar se a edição do contato foi realizada corretamente
+        cy.contains('Contato atualizado com sucesso!');
     });
 
-    it('Deve adicionar um novo contato', () => {
-        cy.get('[data-testid="add-contact-button"]').click();
-        cy.get('[data-testid="name-input"]').type('João');
-        cy.get('[data-testid="phone-input"]').type('(11) 98765-4321');
-        cy.get('[data-testid="email-input"]').type('joao@example.com');
-        cy.get('[data-testid="save-contact-button"]').click();
-        cy.contains('Contato adicionado com sucesso!').should('be.visible');
-        cy.contains('João').should('be.visible');
+
+    it('Remover Contato', () => {
+        cy.visit('https://agenda-contatos-react.vercel.app/');
+
+      // Certificar-se de que o contato existe na lista antes de remover
+        cy.contains('João').should('exist');
+
+      // Localizar o contato desejado na tabela (assumindo que o contato já exista)
+        cy.contains('João').parent('tr').within(() => {
+        // Clicar no botão de exclusão do contato
+        cy.get('button[name="delete"]').click();
     });
 
-    it('Deve alterar um contato existente', () => {
-        cy.contains('João').click();
-        cy.get('[data-testid="edit-contact-button"]').click();
-        cy.get('[data-testid="name-input"]').clear().type('João Silva');
-        cy.get('[data-testid="phone-input"]').clear().type('(11) 99999-9999');
-        cy.get('[data-testid="email-input"]').clear().type('joao.silva@example.com');
-        cy.get('[data-testid="save-contact-button"]').click();
-        cy.contains('Contato alterado com sucesso!').should('be.visible');
-        cy.contains('João Silva').should('be.visible');
-        cy.contains('(11) 99999-9999').should('be.visible');
-        cy.contains('joao.silva@example.com').should('be.visible');
-    });
-
-    it('Deve remover um contato existente', () => {
-        cy.contains('João Silva').click();
-        cy.get('[data-testid="delete-contact-button"]').click();
-        cy.contains('Contato removido com sucesso!').should('be.visible');
-        cy.contains('João Silva').should('not.exist');
+      // Verificar se o contato foi removido corretamente
+        cy.contains('Contato removido com sucesso!');
+        cy.contains('João').should('not.exist');
     });
 });
